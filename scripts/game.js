@@ -1,39 +1,57 @@
 
 class baseline extends Phaser.Scene{
+  constructor(sceneKey){
+    super(sceneKey)
+  }
 
   create() {
+    this.initBackground()
+    this.initPlayer()
+    this.initAnimation()
+    this.initKeys()
+  }
 
+  initBackground(){
     this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
     this.background.setOrigin(0, 0);
 
+  }
+
+  initPlayer(){
+
     this.player1 = this.physics.add.sprite(config.width / 2 - 50, config.height / 2, "player");
-
-    this.initAnimation();
-    
     // sets the canvas to be a boundary
-    this.player1.setCollideWorldBounds(true);
+    this.player1.setCollideWorldBou
+    this.player1.play("player_anim");
+    this.player1.setInteractive();
 
+  }
+  
+  initKeys(){
+    
     // init keys
     this.cursors = this.input.keyboard.createCursorKeys();
+    // W A S D
     this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
     this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+    // spacebar
+    this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
-    this.player1.play("player_anim");
-    this.player1.setInteractive();
   }
 
   update() {
     this.movePlayer(this.player1);
+    this.handleAttack(this.player1);
   }
 
   // animation function
   initAnimation(){
-    
+      // UP DOWN LEFT RIGHT
     this.anims.create({
       key: 'left',
-      frames: this.anims.generateFrameNumbers('player', { start: 29, end: 24 }), 
+      frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
       frameRate: 10,
       repeat: -1
     });
@@ -57,6 +75,7 @@ class baseline extends Phaser.Scene{
       frameRate: 5,
       repeat: -1
     });
+    // Ending directions
 
     this.anims.create({
       key: 'stop',
@@ -64,13 +83,21 @@ class baseline extends Phaser.Scene{
       frameRate: 10,
       repeat: -1
     });
+
+    // Attack animation
+    this.anims.create({
+      key: 'attack',
+      frames: this.anims.generateFrameNumbers('player', {start:36,end:39}),
+      frameRate:10,
+      repeat:2,
+    })
   }
 
   movePlayer(player) {
 
     player.setVelocity(0);
 
-    if (this.cursors.left.isDown) {
+    if (this.cursors.left.isDown||this.keyA.isDown) {
       player.setVelocityX(-130);
       if (player.anims.currentAnim?.key !== 'down') {
         player.anims.play('left', true);
@@ -78,14 +105,14 @@ class baseline extends Phaser.Scene{
      
     }
     
-    else if (this.cursors.right.isDown) {
+    else if (this.cursors.right.isDown||this.keyD.isDown) {
       player.setVelocityX(130);
       if (player.anims.currentAnim?.key !== 'right') {
         player.anims.play('right', true);
     } 
     }
 
-    if (this.cursors.up.isDown) {
+    if (this.cursors.up.isDown||this.keyW.isDown) {
       player.setVelocityY(-130);
       if (player.anims.currentAnim?.key !== 'up') {
         player.anims.play('up', true);
@@ -93,7 +120,7 @@ class baseline extends Phaser.Scene{
 
     }
   
-    else if (this.cursors.down.isDown) {
+    else if (this.cursors.down.isDown||this.keyS.isDown) {
       player.setVelocityY(130);
       if (player.anims.currentAnim?.key !== 'down') {
         player.anims.play('down', true);
@@ -103,9 +130,22 @@ class baseline extends Phaser.Scene{
 
     else{
       player.setVelocityY(0);
+
       if (player.anims.currentAnim?.key !== 'stop') {
         player.anims.play('stop', true);
       }
+    }
+  }
+  
+  handleAttack(player){
+    if(this.keySpace.isDown && !this.isAttacking){
+      this.isAttacking = true
+      if(player.anims.currentAnim?.key !== 'attack'){
+        player.anims.play('attack',true);
+      }
+      player.on('animationcomplete-attack', () => {
+        player.anims.play('stop');
+      })
     }
   }
 }
@@ -123,6 +163,9 @@ class MenuScene extends Phaser.Scene {
       });
   }
 }
+
+
+
 
     // SCENE1
 
