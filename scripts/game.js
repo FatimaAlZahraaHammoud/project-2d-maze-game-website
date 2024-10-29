@@ -15,11 +15,8 @@ class baseline extends Phaser.Scene{
 
     // init keys
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-    this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-    this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
-    this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     
+
     this.player1.play("player_anim");
     this.player1.setInteractive();
   }
