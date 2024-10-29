@@ -15,7 +15,11 @@ class baseline extends Phaser.Scene{
 
     // init keys
     this.cursors = this.input.keyboard.createCursorKeys();
-
+    this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
+    this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+    
     this.player1.play("player_anim");
     this.player1.setInteractive();
   }
@@ -128,7 +132,7 @@ class MenuScene extends Phaser.Scene {
       }
     
       preload(){
-        this.load.image("background", "assets/tilesets/decor_16x16.png");
+        this.load.image("background", "assets/tilesets/Grass_Middle.png");
         
         this.load.spritesheet("player", "assets/characters/player.png",{
           frameWidth: 48,
