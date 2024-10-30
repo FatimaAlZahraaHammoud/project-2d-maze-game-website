@@ -10,6 +10,7 @@ class baseline extends Phaser.Scene{
     this.initAnimation();
     this.initKeys();
     this.initObjects();
+    this.initEnd();
   }
 
   // initialize Backgrounds
@@ -33,13 +34,22 @@ class baseline extends Phaser.Scene{
     this.obstaclesGroup = this.add.group();
     this.tree = this.physics.add.sprite(200, 150, "tree");
     this.tree.setImmovable(true);
-    this.tree.setSize(20, 20);
-    this.tree.setOffset(3, 3);
+    this.tree.setOrigin(0.5, 0.5);
+    this.tree.setSize(30, 30);
+    this.tree.setOffset(9, 9);
     //this.rocks = this.physics.add.sprite(100, 150, "rocks");
 
     this.obstaclesGroup.add(this.tree);
   }
   
+  // initialize the end assets
+  initEnd(){
+    this.end = this.physics.add.sprite(700, 400, "end");
+    this.end.setImmovable(true);
+    this.end.setSize(32, 32);
+    this.end.setOffset(5, 2);
+  }
+
   // initialize Keys
   initKeys(){
     // init keys
@@ -50,9 +60,9 @@ class baseline extends Phaser.Scene{
     this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
     this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     // space bar
-    this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
-
+    this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   }
+
   // animation function
   initAnimation(){
     // UP DOWN LEFT RIGHT
@@ -104,6 +114,7 @@ class baseline extends Phaser.Scene{
     this.movePlayer(this.player1);
     this.handleAttack(this.player1);
     this.collidePlayerObjects();
+    this.reachingTheEnd();
   }
 
   // animation function
@@ -225,6 +236,14 @@ class baseline extends Phaser.Scene{
   collidePlayerObjects(){
     this.physics.collide(this.player1, this.obstaclesGroup);
   }
+
+  reachingTheEnd(){
+    this.physics.add.overlap(this.player1, this.end, this.handleOverlap, null, this);
+  }
+
+  handleOverlap(){
+    // function win
+  }
   
 }
 
@@ -232,7 +251,7 @@ class baseline extends Phaser.Scene{
 class MenuScene extends Phaser.Scene {
   constructor() {
       super("menuScene"); // Identifier for the menu scene
-  }
+  }/*
   preload(){
     this.load.image("player", "assets/pictures/player_large.png")
     this.load.image("player2", "assets/pictures/player2_large.png")
@@ -293,6 +312,7 @@ class MenuScene extends Phaser.Scene {
               }
         })
     }
+        */
 }
 
 
@@ -317,6 +337,8 @@ class Scene1 extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 48
     });  
+
+    this.load.image("end", "assets/objects/end.png");  
   }
   
   create() {
@@ -335,7 +357,7 @@ var config = {
     width: 800,
     height: 600,
     backgroundColor: 0x000000,
-    scene: [MenuScene,Scene1,Scene2],
+    scene: [/*MenuScene*/Scene1,Scene2],
     pixelArt: true,
     physics: {
       default: "arcade",
