@@ -234,11 +234,16 @@ class MenuScene extends Phaser.Scene {
       super("menuScene"); // Identifier for the menu scene
   }
   preload(){
-    this.load.image("player", "assets/characters/character2_large.png")
-    this.load.image("player2", "assets/characters/character2_full.png")
-    this.load.image("startButton","assets/objects/start.png")
+    this.load.image("player", "assets/pictures/player_large.png")
+    this.load.image("player2", "assets/pictures/player2_large.png")
+    this.load.image("startButton","assets/pictures/start.png")
+    this.load.image("background", "assets/pictures/background.png")
   }
   create() {
+    // background
+    this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "background").setOrigin(0.5);
+
+
     //  Info
     this.add.text(this.cameras.main.centerX -290,230, "Controls:\nSpace - Attack\nW - Walk Forward\nA - Left\nD - Right\nS - Backward", {
       font: "24px Arial",
@@ -246,51 +251,48 @@ class MenuScene extends Phaser.Scene {
       align: "center"
       }).setOrigin(0.5);
 
+      // title
       this.add.text(this.cameras.main.centerX,50, "Pick Your Hero!",{
         font:"32px",
         fill: "#ffffff"
       }).setOrigin(0.5);
+      this.start =this.add.sprite(this.cameras.main.centerX)
 
       // Charc1
       this.player = this.add.sprite(this.cameras.main.centerX - 100,200,"player").setInteractive();
       this.player.setScale(1);
 
       // Char2
-      this.player = this.add.sprite(this.cameras.main.centerX + 100,195,"player2").setInteractive();
-      this.player.setScale(1.4);
+      this.player2 = this.add.sprite(this.cameras.main.centerX + 100,195,"player2").setInteractive();
+      this.player2.setScale(1.4);
 
       // border
       this.selectionOutline = this.add.graphics();
-      this.selectionOutline.lineStyle(3, 0xffffff, 1); //3px white solid
-      this.selectionOutline.lineStyle(0,0,0,0); //invisible
-
+      this.selectionOutline.lineStyle(0, 0xffffff, 1); //3px white solid
+  
       // flag
       this.selected = null;
 
       // addEventListener
-      this.player.on("pointerdown", ()=> this.selected("player"));
-      this.player2.on("pointerdown", ()=> this.selected("player"))
+      this.player.on("pointerdown", ()=> this.selectCharacter(this.player));
+      this.player2.on("pointerdown", ()=> this.selectCharacter(this.player2))
 
-      
+      // starting the game
+      this.startButton = this.add.sprite(this.cameras.main.centerX, 450, "startButton").setInteractive();
+      this.startButton.setScale(0.1)
 
-      // Start the game
-      // this.startButton = this.add.sprite(this.cameras.main.centerX, 450, "startButton").setInteractive();
-      // this.startButton.on("pointerdown", ()=>{
-      //   if (this.selected){
-      //     this.scene.start("bootgame" , {player: this.selected})
-      //   } else{
-      //     this.add.text(this.cameras.main.centerX,500, "Please select a hero",{
-      //       font: "18px",
-      //       fill: "#ffffff"
-      //     }).setOrigin(0.5)
-      //   }
-      // })
-      // this.add.text(100, 150, "Press Enter to Play").setInteractive().on('pointerdown', () => {
-      //     this.scene.start("bootGame"); // Transition to Scene1
-      // });
-  }
-
-
+        this.startButton.on("pointerdown", () => {
+            if (this.selected) {
+                // Start game
+                this.scene.start("bootgame", { player: this.selected });
+            } else {
+                this.add.text(this.cameras.main.centerX, 500, "Please select a hero", {
+                    font: "18px",
+                    fill: "#ffffff"
+                }).setOrigin(0.5);
+              }
+        })
+    }
 }
 
 
