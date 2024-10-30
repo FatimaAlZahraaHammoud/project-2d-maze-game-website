@@ -10,7 +10,7 @@ class baseline extends Phaser.Scene{
     this.initAnimation();
     this.initKeys();
     this.initObjects();
-  }
+    }
 
   // initialize Backgrounds
   initBackground(){
@@ -21,11 +21,19 @@ class baseline extends Phaser.Scene{
 
   // initialize Player
   initPlayer(){
-    this.player1 = this.physics.add.sprite(config.width / 2 - 50, config.height / 2, "player");
+
+    this.player= this.physics.add.sprite(config.width / 2 - 50, config.height / 2, "player");
     // sets the canvas to be a boundary
-    this.player1.setCollideWorldBounds(true);
-    this.player1.play("player_anim");
-    this.player1.setInteractive();
+    this.player.setCollideWorldBounds(true);
+
+    // checking if there is animation
+    if(this.anims.exists("player_anim")){
+        this.player.play("player_anim");
+    } else{
+      console.warn("Animation 'player_anim' not found")
+    }
+  
+    this.player.setInteractive();
   }
 
   // initialize objects
@@ -101,63 +109,9 @@ class baseline extends Phaser.Scene{
 }
 
   update() {
-    this.movePlayer(this.player1);
-    this.handleAttack(this.player1);
+    this.movePlayer(this.player);
+    this.handleAttack(this.player);
     this.collidePlayerObjects();
-  }
-
-  // animation function
-  initAnimation(){
-
-    // UP DOWN LEFT RIGHT
-
-    // left
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
-      frameRate: 10,
-      repeat: -1
-    });
-
-    //right
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
-      frameRate: 3,
-      repeat: -1
-    });
-
-    //up
-    this.anims.create({
-      key: 'up',
-      frames: this.anims.generateFrameNumbers('player', { start: 31, end: 35 }),
-      frameRate: 10,
-      repeat: -1
-    });
-
-    //down
-    this.anims.create({
-      key: 'down',
-      frames: this.anims.generateFrameNumbers('player', { start: 19, end: 23 }), 
-      frameRate: 5,
-      repeat: -1
-    });
-
-    // Ending directions
-    this.anims.create({
-      key: 'stop',
-      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }), 
-      frameRate: 10,
-      repeat: -1
-    });
-
-    // Attack animation
-    this.anims.create({
-      key: 'attack',
-      frames: this.anims.generateFrameNumbers('player', {start:36,end:39}),
-      frameRate:10,
-      repeat:2,
-    })
   }
 
   movePlayer(player) {
@@ -196,9 +150,7 @@ class baseline extends Phaser.Scene{
       player.setVelocityY(130);
       if (player.anims.currentAnim?.key !== 'down') {
         player.anims.play('down', true);
-    }
-
-    }
+    }}
 
     // stopping player
     if (player.body.velocity.x === 0 && player.body.velocity.y === 0) {
@@ -209,133 +161,165 @@ class baseline extends Phaser.Scene{
   }
   
   // attacking
-  handleAttack(player){
-    if(this.keySpace.isDown && !this.isAttacking){
-      this.isAttacking = true
-      if(player.anims.currentAnim?.key !== 'attack'){
-        player.anims.play('attack',true);
-      }
-      player.on('animationcomplete-attack', () => {
-        player.anims.play('stop');
-      })
-    }
-  }
+  // handleAttack(player){
+  //   if(this.keySpace.isDown && !this.isAttacking){
+  //     this.isAttacking = true
+  //     if(player.anims.currentAnim?.key !== 'attack'){
+  //       player.anims.play('attack',true);
+  //     }
+  //     player.on('animationcomplete-attack', () => {
+  //       player.anims.play('stop');
+  //     })
+  //   }
+  // }
 
   // Collision between Player and Object
   collidePlayerObjects(){
-    this.physics.collide(this.player1, this.obstaclesGroup);
+    this.physics.collide(this.player, this.obstaclesGroup);
   }
   
 }
 
 // menu
-class MenuScene extends Phaser.Scene {
-  constructor() {
-      super("menuScene"); // Identifier for the menu scene
-  }
-  preload(){
-    this.load.image("player", "assets/pictures/player_large.png")
-    this.load.image("player2", "assets/pictures/player2_large.png")
-    this.load.image("startButton","assets/pictures/start.png")
-    this.load.image("background", "assets/pictures/background.png")
-  }
-  create() {
-    // background
-    this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "background").setOrigin(0.5);
+// class MenuScene extends Phaser.Scene {
+//   constructor() {
+//       super("menuScene"); // Identifier for the menu scene
+//   }
+//   preload(){
+//     this.load.image("player", "assets/pictures/player_large.png")
+//     this.load.image("player2", "assets/pictures/player2_large.png")
+//     this.load.image("startButton","assets/pictures/start.png")
+//     this.load.image("background", "assets/pictures/background.png")
+//   }
+//   create() {
+//     // background
+//     this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "background").setOrigin(0.5);
 
 
-    //  Info
-    this.add.text(this.cameras.main.centerX -290,230, "Controls:\nSpace - Attack\nW - Walk Forward\nA - Left\nD - Right\nS - Backward", {
-      font: "24px Arial",
-      fill: "#ffffff",
-      align: "center"
-      }).setOrigin(0.5);
+//     //  Info
+//     this.add.text(this.cameras.main.centerX -290,430, "Controls:\nSpace - Attack\nW - Walk Forward\nA - Left\nD - Right\nS - Backward", {
+//       font: "24px Arial",
+//       fill: "#ffffff",
+//       align: "center"
+//       }).setOrigin(0.5);
+//       // title
+//       this.add.text(this.cameras.main.centerX,50, "Pick Your Hero!",{
+//         font:"32px",
+//         fill: "#ffffff"
+//       }).setOrigin(0.5);
+//       this.start =this.add.sprite(this.cameras.main.centerX)
 
-      // title
-      this.add.text(this.cameras.main.centerX,50, "Pick Your Hero!",{
-        font:"32px",
-        fill: "#ffffff"
-      }).setOrigin(0.5);
-      this.start =this.add.sprite(this.cameras.main.centerX)
+//       // Charc1
+//       this.player = this.add.sprite(this.cameras.main.centerX - 100,200,"player").setInteractive();
+//       this.player.setScale(1);
 
-      // Charc1
-      this.player = this.add.sprite(this.cameras.main.centerX - 100,200,"player").setInteractive();
-      this.player.setScale(1);
+//       // Char2
+//       this.player2 = this.add.sprite(this.cameras.main.centerX + 100,195,"player2").setInteractive();
+//       this.player2.setScale(1.4);
 
-      // Char2
-      this.player2 = this.add.sprite(this.cameras.main.centerX + 100,195,"player2").setInteractive();
-      this.player2.setScale(1.4);
-
-      // border
-      this.selectionOutline = this.add.graphics();
-      this.selectionOutline.lineStyle(0, 0xffffff, 1); //3px white solid
+//       // border
+//       this.selectionOutline = this.add.graphics();
+//       this.selectionOutline.lineStyle(0, 0xffffff, 1); //3px white solid
   
-      // flag
-      this.selected = null;
+//       // flag
+//       this.selected = null;
 
-      // addEventListener
-      this.player.on("pointerdown", ()=> this.selectCharacter(this.player));
-      this.player2.on("pointerdown", ()=> this.selectCharacter(this.player2))
+//       // addEventListener
+//       this.player.on("pointerdown", ()=> this.selectCharacter(this.player));
+//       this.player2.on("pointerdown", ()=> this.selectCharacter(this.player2))
 
-      // starting the game
-      this.startButton = this.add.sprite(this.cameras.main.centerX, 450, "startButton").setInteractive();
-      this.startButton.setScale(0.1)
+//       // starting the game
+//       this.startButton = this.add.sprite(this.cameras.main.centerX, 450, "startButton").setInteractive();
+//       this.startButton.setScale(0.1)
 
-        this.startButton.on("pointerdown", () => {
-            if (this.selected) {
-                // Start game
-                this.scene.start("bootgame", { player: this.selected });
-            } else {
-                this.add.text(this.cameras.main.centerX, 500, "Please select a hero", {
-                    font: "18px",
-                    fill: "#ffffff"
-                }).setOrigin(0.5);
-              }
-        })
-    }
-}
+//         this.startButton.on("pointerdown", () => {
+//             if (this.selected) {
+//                 // Start game
+//                 this.scene.start("bootgame")//, { player: this.selected });
+//             } else {
+//                 this.add.text(this.cameras.main.centerX, 500, "Please select a hero", {
+//                     font: "18px",
+//                     fill: "#ffffff"
+//                 }).setOrigin(0.5);
+//               }
+//         })
+//     }
+    
+//     selectCharacter(character){
+//       this.selected = character.texture.key; 
+//       // Clear 
+//       this.selectionOutline.clear();
+
+//       // Draw new outline around the selected character
+//       this.selectionOutline.lineStyle(3, 0xffffff); // 3px white solid line
+//       this.selectionOutline.strokeRect(
+//           character.x - character.displayWidth / 2 - 5, 
+//           character.y - character.displayHeight / 2 - 5, 
+//           character.displayWidth + 10, 
+//           character.displayHeight + 10 
+//       );
+// }
+// }
 
 
 
 
 // SCENE1
 
-class Scene1 extends Phaser.Scene {
+class Scene1 extends baseline {
   constructor() {
-    super("bootGame");
+    super("bootgame");
   }
+
+  // init(data){
+  //   this.selectCharacter = data.player
+  // }
 
   preload(){
     this.load.image("background", "assets/tilesets/Grass_Middle.png");
-    
-    this.load.spritesheet("player", "assets/characters/player.png",{
-      frameWidth: 48,
-      frameHeight: 48
-    });  
+  
+    // this.load.spritesheet(this.selectCharacter, `assets/characters/${this.selectCharacter}`,{
+    //   frameWidth: 48,
+    //   frameHeight: 48
+    // });  
 
-    this.load.image("tree", "assets/objects/Oak_Tree.png",{
-      frameWidth: 48,
-      frameHeight: 48
-    });  
+    this.load.image("player10", "assets/characters/player.png",{
+      frameHeight:48,
+      frameWidth:48
+    })
+
+    // this.load.image("tree", "assets/objects/Oak_Tree.png",{
+    //   frameWidth: 48,
+    //   frameHeight: 48
+    // });  
   }
   
   create() {
-    this.add.text(20, 20, "Loading game...");
-    this.scene.start("playGame");
+    super.create()
+    this.initAnimation(); // Ensure animations are initialized
+        this.player = this.physics.add.sprite(config.width / 2, config.height / 2, "player10");
+        this.player.setCollideWorldBounds(true);
+    // this.add.text(20, 20, "Loading game...");
+    // this.scene.start("playGame");
+  }
+
+  update(){
+    super.update()
+    this.movePlayer(this.player); 
   }
 }
 
-class Scene2 extends baseline {
-  constructor() {
-    super("playGame");
-  }
-}
+// class Scene2 extends baseline {
+//   constructor() {
+//     super("playGame");
+//   }
+// }
 
 var config = {
     width: 800,
     height: 600,
-    backgroundColor: 0x000000,
-    scene: [MenuScene,Scene1,Scene2],
+    // backgroundColor: 0xffffff,
+    scene: [Scene1],
     pixelArt: true,
     physics: {
       default: "arcade",
