@@ -10,23 +10,24 @@ class baseline extends Phaser.Scene{
     this.initAnimation()
     this.initKeys()
   }
-
+  // background
   initBackground(){
     this.background = this.add.tileSprite(0, 0, config.width, config.height, "background");
     this.background.setOrigin(0, 0);
 
   }
-
+  // player
   initPlayer(){
 
     this.player1 = this.physics.add.sprite(config.width / 2 - 50, config.height / 2, "player");
     // sets the canvas to be a boundary
-    this.player1.setCollideWorldBou
+    this.player1.setCollideWorldBounds(true);
+    
     this.player1.play("player_anim");
     this.player1.setInteractive();
 
   }
-  
+  // keys
   initKeys(){
     
     // init keys
@@ -40,57 +41,56 @@ class baseline extends Phaser.Scene{
     this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
   }
+  // animation function
+  initAnimation(){
+    // UP DOWN LEFT RIGHT
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
+    frameRate: 10,
+    repeat: -1
+  });
+  this.anims.create({
+    key: 'right',
+    frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
+    frameRate: 3,
+    repeat: -1
+  });
+
+  this.anims.create({
+    key: 'up',
+    frames: this.anims.generateFrameNumbers('player', { start: 31, end: 35 }),
+    frameRate: 10,
+    repeat: -1
+  });
+
+  this.anims.create({
+    key: 'down',
+    frames: this.anims.generateFrameNumbers('player', { start: 19, end: 23 }), 
+    frameRate: 5,
+    repeat: -1
+  });
+  // Ending directions
+
+  this.anims.create({
+    key: 'stop',
+    frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }), 
+    frameRate: 10,
+    repeat: -1
+  });
+
+  // Attack animation
+  this.anims.create({
+    key: 'attack',
+    frames: this.anims.generateFrameNumbers('player', {start:36,end:39}),
+    frameRate:10,
+    repeat:2,
+  })
+}
 
   update() {
     this.movePlayer(this.player1);
     this.handleAttack(this.player1);
-  }
-
-  // animation function
-  initAnimation(){
-      // UP DOWN LEFT RIGHT
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('player', { start: 24, end: 29 }), 
-      frameRate: 3,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'up',
-      frames: this.anims.generateFrameNumbers('player', { start: 31, end: 35 }),
-      frameRate: 10,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'down',
-      frames: this.anims.generateFrameNumbers('player', { start: 19, end: 23 }), 
-      frameRate: 5,
-      repeat: -1
-    });
-    // Ending directions
-
-    this.anims.create({
-      key: 'stop',
-      frames: this.anims.generateFrameNumbers('player', { start: 0, end: 5 }), 
-      frameRate: 10,
-      repeat: -1
-    });
-
-    // Attack animation
-    this.anims.create({
-      key: 'attack',
-      frames: this.anims.generateFrameNumbers('player', {start:36,end:39}),
-      frameRate:10,
-      repeat:2,
-    })
   }
 
   movePlayer(player) {
@@ -181,6 +181,11 @@ class MenuScene extends Phaser.Scene {
           frameWidth: 48,
           frameHeight: 48
         });  
+
+        this.load.spritesheet("skeleton", "assets/characters/skeleton.png",{
+          frameWidth:48,
+          frameHeight:48 
+        })
       }
      
       create() {
@@ -193,8 +198,6 @@ class Scene2 extends baseline {
   constructor() {
     super("playGame");
   }
-
-
 }
 
 var config = {
