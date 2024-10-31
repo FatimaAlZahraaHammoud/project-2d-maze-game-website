@@ -1,11 +1,11 @@
 
 class baseline extends Phaser.Scene{
   constructor(){
-    super("start");
+    super("playGame");
   }
 
   init(data){
-    this.selectCharacter = data.selectedPlayer3;
+    this.selectCharacter = data.selectedPlayer2;
     console.log()
   }
 
@@ -14,7 +14,16 @@ class baseline extends Phaser.Scene{
     this.initKeys();
 
     // initialize player
-    this.player = new Player(this, config.width / 2 - 50, config.height / 2, this.selectCharacter); 
+    this.player = new Player(this, config.width / 2 - 50, config.height / 2, this.selectCharacter);
+    
+    /*this.fog = this.add.graphics();
+    this.fog.fillStyle(0x000000, 0.8);
+    this.fog.fillRect(0, 0, this.obstaclesGroup.width, this.obstaclesGroup.height);
+
+    this.vision = this.make.graphics({x:0, y:0, add:false});
+    this.vision.fillStyle(0xffffff, 1);
+    this.vision.fillCircle(0, 0, 100);
+    this.mask = this.vision.createGeometryMask();*/
 
     this.attacker = new Attackers(this, 0, 0,);
 
@@ -85,12 +94,15 @@ class baseline extends Phaser.Scene{
     this.player.attack(this.keySpace);
     this.collidePlayerObjects();
     this.reachingTheEnd();
+    /*this.vision.x = this.player.x;
+    this.vision.y = this.player.y;*/
 
     // Attacker behavior
     if (this.attacker.attacker.active) {
       this.attacker.moveTowards(this.player.player);
       if (this.physics.overlap(this.attacker.attacker, this.player.player)) {
-          this.attacker.attack(this.player.player);
+          //this.attacker.attack(this.player.player);
+          this.scene.start("gameOver");
       }
     }
 
@@ -107,7 +119,7 @@ class baseline extends Phaser.Scene{
   }
 
   handleOverlap(){
-    // function win
+    this.scene.start("gameWin", {score: this.score});
   }
   
 }

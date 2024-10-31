@@ -12,24 +12,19 @@ class Scene1 extends Phaser.Scene {
     }
 
     preload(){
-        this.load.image("background", "assets/tilesets/Grass_Middle.png");
+        this.load.image("background-image", "assets/tilesets/Grass_Middle.png");
 
         this.load.spritesheet(this.selectedCharacter, `assets/characters/${this.selectedCharacter}.png`,{
             frameWidth: 48,
             frameHeight: 48
         });
-        
-        /*this.load.spritesheet("player", "assets/characters/player.png",{
-        frameWidth: 48,
-        frameHeight: 48
-        });
-*/
-        this.load.image("tree", "assets/objects/Oak_Tree.png",{
+
+        this.load.image("end", "assets/objects/end.png");  
+
+        this.load.spritesheet("tree", "assets/objects/Oak_Tree.png", {
             frameWidth: 48,
             frameHeight: 48
         });
-
-        this.load.image("end", "assets/objects/end.png");  
 
         this.load.spritesheet("skeleton", "assets/characters/skeleton.png", {
             frameWidth: 48,
